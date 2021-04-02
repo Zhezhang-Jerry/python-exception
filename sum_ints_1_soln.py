@@ -3,9 +3,11 @@ program: sum_ints_1_soln.py
 Author: Zhe Zhang A01257572 Set B
 Date: Apr 2 2021
 """
+import sys
 
 def main():
-    with open('numbers.txt', 'r') as f:
+    file_name = sys.argv[1]
+    with open(file_name, 'r') as f:
         content = f.readlines()
         num_list = [num.split() for num in content]
         nlist = []
@@ -18,7 +20,7 @@ def main():
         num = float(num)
         total += num
 
-    print(f'Total number is {total}')
+    print(f'Sum: {total}')
 
 
 main()
