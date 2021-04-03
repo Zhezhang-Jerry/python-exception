@@ -8,15 +8,17 @@ import sys
 def main():
     file_name = sys.argv[1]
     with open(file_name, 'r') as f:
-        content = f.readlines()
-        num_list = [num.split() for num in content]
-        nlist = []
-        for ilist in num_list:
-            for n in ilist:
-                nlist.append(n)
+        # content = f.readlines()
+        # num_list = [num.split() for num in content]
+        # nlist = []
+        # for ilist in num_list:
+        #     for n in ilist:
+        #         nlist.append(n)
+        content = f.read()
+        num_list = content.split()
 
     total = 0
-    for num in nlist:
+    for num in num_list:
         num = float(num)
         total += num
 
