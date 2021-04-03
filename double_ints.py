@@ -10,35 +10,29 @@ def main():
     try:
         file_name = sys.argv[1]
         with open(file_name, 'r') as f:
-            content = f.readlines()
-            num_list = [num.split() for num in content]
-            nlist = []
-            for ilist in num_list:
-                for n in ilist:
-                    nlist.append(n)
-
-        total = 0
-        for num in nlist:
-            num = float(num)
-            total += num
-
-        print(f'Sum: {total}')
+            content = f.read()
     except IndexError:
         sys.exit(f'Usage: {os.path.basename(sys.argv[0])}[input_file_name]')
     except FileNotFoundError:
         sys.exit(f'{file_name} does not exist.')
-    except ValueError:
-        notnum_list = []
-        total = 0
-        for num in nlist:
-            if num.isalpha() is True:
-                notnum = num
-                notnum_list.append(notnum)                
-            else:
-                num = float(num)
-                total += num
+    
+    num_list = content.split()
+    
+    notnum_list = []
+    total_int = 0
+    total_float = 0
+    for num in num_list:
+        try:
+            intnum = int(num)
+            total_int += intnum
+        except ValueError:
+            try:
+                floatnum = float(num)
+                total_float += floatnum
+            except ValueError:
+                notnum_list.append(num)
                 
-        sys.exit(f'Sum: {total:.2f}\nTokens: {notnum_list} are invalid.')
+    print(f'Sum of ints: {total_int}\nSum of floats: {total_float:.2f}\nTokens: {notnum_list} are invalid.')
 
 
 main()
