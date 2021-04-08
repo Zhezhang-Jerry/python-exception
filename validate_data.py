@@ -34,11 +34,24 @@ def load_csv_data():
     return new_content, student_id
 
 
-# def valid_data(list):
-#     valid_ch = ['P', 'F', 'W']
+def valid_data(list):
+    valid_ch = ['P', 'F', 'W']
+    new_list = list
+    for i, data in enumerate(list):
+        try:
+            if list[i][2] in valid_ch:
+                new_list[i][2] = list[i][2]
+                new_list[i][3] = int(list[i][3])
+                new_list[i][4] = list[i][4]
+            else:
+                new_list[i][2] = int(list[i][2])
+                new_list[i][3] = int(list[i][3])
+                new_list[i][4] = list[i][4]
+        except (ValueError,IndexError):
+            print(f'warning: invalid data in record\n         {data} discarded')
+            new_list.pop(i)
 
-
-#     return student_list
+    return new_list
 
 
 def get_student_data(list, student_id):
@@ -57,8 +70,10 @@ def get_student_list(list):
 
 def main():
     student_list, student_id = load_csv_data()
-    student_data = get_student_data(student_list, student_id)
-    id_list = get_student_list(student_list)
+    new_student_list = valid_data(student_list)
+    print(len(new_student_list))
+    student_data = get_student_data(new_student_list, student_id)
+    id_list = get_student_list(new_student_list)
     if student_id in id_list:
         print(f'\nStudent data for: {student_id}\n')
         for i in student_data:

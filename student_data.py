@@ -40,6 +40,7 @@ def get_student_list(list):
 
 def main():
     student_list, student_id = load_csv_data()
+    print(len(student_list))
     student_data = get_student_data(student_list, student_id)
     id_list = get_student_list(student_list)
     if student_id in id_list:

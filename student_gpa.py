@@ -18,29 +18,40 @@ def load_csv_data():
                 list_person = data.strip().split(',')
                 content[i] = list_person
             new_content = content
-            valid_ch = ['P', 'F', 'W']
-            print()
+            print() 
             for i, data in enumerate(content[:]):
-                try:
-                    new_content[i][1] = content[i][1] + ' ' + content[i][2]
-                    new_content[i].pop(2)
-                    if new_content[i][2] in valid_ch:
-                        new_content[i][2] = new_content[i][2]
-                        new_content[i][3] = int(new_content[i][3])
-                        new_content[i][4] = new_content[i][4]
-                    else:
-                        new_content[i][2] = int(new_content[i][2])
-                        new_content[i][3] = int(new_content[i][3])
-                        new_content[i][4] = new_content[i][4]
-                except (ValueError, IndexError):
-                    new_content.pop(i)
-                    print(f'warning: invalid data in record\n         {data} discarded')
+                new_content[i][1] = content[i][1] + ' ' + content[i][2]
+                new_content[i].pop(2)
+                if new_content[i][2].isdigit() is True:
+                    new_content[i][2] = int(new_content[i][2])
+                if new_content[i][3].isdigit() is True:
+                    new_content[i][3] = int(new_content[i][3])
     except FileNotFoundError:
         sys.exit(f'File {file_name} does not exist.')
-    # except IndexError:
-    #     sys.exit(f'Usage: {sys.argv[0]} [input_file_name] [student_id]')
+    except IndexError:
+        sys.exit(f'Usage: {sys.argv[0]} [input_file_name] [student_id]')
 
     return new_content, student_id
+
+
+def valid_data(list):
+    valid_ch = ['P', 'F', 'W']
+    new_list = list
+    for i, data in enumerate(list):
+        try:
+            if list[i][2] in valid_ch:
+                new_list[i][2] = list[i][2]
+                new_list[i][3] = int(list[i][3])
+                new_list[i][4] = list[i][4]
+            else:
+                new_list[i][2] = int(list[i][2])
+                new_list[i][3] = int(list[i][3])
+                new_list[i][4] = list[i][4]
+        except (ValueError,IndexError):
+            print(f'warning: invalid data in record\n         {data} discarded')
+            new_list.pop(i)
+
+    return new_list
 
 
 def get_student_data(list, student_id):
@@ -53,24 +64,42 @@ def get_student_data(list, student_id):
 def get_student_list(list):
     """ sort the student id list """
     id_list = set([i[0] for i in list])
-    
     return sorted(id_list)
 
 
-def calculate_gpa():
-    pass
+def calculate_gpa(data):
+    """ calculate the student gpa """
+    total_score = 0
+    credit = 0
+    for i in data:
+        if i[2] == 'P':
+            score = 100
+        elif i[2] == 'F':
+            score = 0
+        elif i[2] == 'W':
+            credit -= i[3]
+            score = 0
+        else:
+            score = i[2]
+        credit += i[3]
+        total_score += score * i[3]
+    gpa = round(total_score / credit)
+
+    return gpa
 
 
 def main():
     student_list, student_id = load_csv_data()
-    student_data = get_student_data(student_list, student_id)
-    id_list = get_student_list(student_list)
+    new_student_list = valid_data(student_list)
+    student_data = get_student_data(new_student_list, student_id)
+    id_list = get_student_list(new_student_list)
     if student_id in id_list:
         print(f'\nStudent data for: {student_id}\n')
         for i in student_data:
             print(i)
     else:
         print(f'No data found for student: {student_id}')
-
+    student_gpa = calculate_gpa(student_data)
+    print(f'\nStudent {student_id} has GPA {student_gpa}')
 
 main()
